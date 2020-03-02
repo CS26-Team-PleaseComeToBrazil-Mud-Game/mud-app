@@ -1,0 +1,63 @@
+{
+    "name": "mui-template",
+    "version": "1.0.0",
+    "description": "Boilerlate React template with Material UI, Jest, and Webpack",
+    "main": "index.js",
+    "sideEffects": false,
+    "scripts": {
+        "dev": "cross-env NODE_ENV=development webpack-dev-server   --env.env=dev --config build-utils/webpack.config.js  --open",
+        "build": "cross-env NODE_ENV=production webpack  --env.env=prod --config build-utils/webpack.config.js  ",
+        "format": "prettier --write \"src/**/*.{js,jsx}\" \"build-utils/**/*.{js,jsx}\" ",
+        "test": "jest ",
+        "test:watch": "jest --watch "
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.7.5",
+        "@babel/plugin-proposal-class-properties": "^7.7.4",
+        "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+        "@babel/plugin-transform-runtime": "^7.7.6",
+        "@babel/preset-env": "^7.7.6",
+        "@babel/preset-react": "^7.7.4",
+        "@hot-loader/react-dom": "^16.11.0",
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.4.0",
+        "@testing-library/react-hooks": "^3.2.1",
+        "@testing-library/user-event": "^7.1.2",
+        "babel-loader": "^8.0.6",
+        "clean-webpack-plugin": "^3.0.0",
+        "cross-env": "^6.0.3",
+        "dotenv": "^8.2.0",
+        "eslint": "^6.8.0",
+        "eslint-plugin-react": "^7.18.3",
+        "file-loader": "^5.0.2",
+        "html-webpack-plugin": "^3.2.0",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^24.9.0",
+        "prettier": "1.19.1",
+        "react-hot-loader": "^4.12.19",
+        "react-test-renderer": "^16.12.0",
+        "terser-webpack-plugin": "^2.3.0",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.9.0",
+        "webpack-merge": "^4.2.2"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.9.3",
+        "@material-ui/icons": "^4.9.1",
+        "prop-types": "^15.7.2",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0"
+    },
+    "browserslist": [
+        "defaults",
+        "not ie < 11",
+        "last 2 versions",
+        "> 1%",
+        "iOS 7",
+        "last 3 iOS versions"
+    ]
+}
