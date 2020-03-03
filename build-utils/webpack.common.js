@@ -9,6 +9,8 @@ module.exports = (path, webpack, envKeys) => ({
     output: {
         filename: "[name].[hash].js",
         path: path.resolve(__dirname, "../", "public"),
+        // required for nested routes to work in development
+        publicPath: '/',
         // used for codesplitting
         chunkFilename: "[name].[hash].js",
     },
