@@ -1,6 +1,9 @@
-import React from "react"
+import React, {useContext} from "react"
 import {useHistory} from "react-router-dom"
 import clsx from "clsx"
+
+// Components
+import {AppContext, actn} from "Context"
 
 // MUI
 import {makeStyles} from "@material-ui/core/styles"
@@ -17,29 +20,66 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
         color: "red",
     },
+    toolbarOffset: theme.mixins.toolbar,
 }))
 
 function Header() {
     const winHistory = useHistory()
-    const {title, menuButton} = useStyles()
+    const {title, menuButton, toolbarOffset} = useStyles()
+    const {
+        state: {userToken},
+        dispatch,
+    } = useContext(AppContext)
 
     return (
-        <AppBar position="static">
-            <Toolbar>
-                <Typography variant="h6" className={clsx(title)}>
-                    Ant Adventure
-                </Typography>
-                <Button className={menuButton} variant="contained">
-                    Login
-                </Button>
-                <Button className={clsx(menuButton)} variant="contained">
-                    Register
-                </Button>
-                <Button className={clsx(menuButton)} variant="contained">
-                    Logout
-                </Button>
-            </Toolbar>
-        </AppBar>
+        <>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" className={clsx(title)}>
+                        Ant Adventure
+                    </Typography>
+                    {!userToken && (
+                        <>
+                            <Button
+                                className={menuButton}
+                                variant="contained"
+                                onClick={() =>
+                                    winHistory.push("/onboarding/login")
+                                }
+                            >
+                                Login
+                            </Button>
+                            <Button
+                                className={clsx(menuButton)}
+                                variant="contained"
+                                onClick={() =>
+                                    winHistory.push("/onboarding/register")
+                                }
+                            >
+                                Register
+                            </Button>
+                        </>
+                    )}
+                    {userToken && (
+                        <Button
+                            className={clsx(menuButton)}
+                            variant="contained"
+                            onClick={() => {
+                                window.localStorage.removeItem("ant_game_token")
+                                dispatch({
+                                    type: actn.updateUser,
+                                    payload: {userToken: null},
+                                })
+                                winHistory.push("/")
+                            }}
+                        >
+                            Logout
+                        </Button>
+                    )}
+                </Toolbar>
+            </AppBar>
+            {/* <div className={toolbarOffset} /> */}
+        </>
     )
 }
 

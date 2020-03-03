@@ -1,12 +1,14 @@
-import React from "react"
+import React, {useContext} from "react"
 import {useForm, ErrorMessage} from "react-hook-form"
 import {useHistory} from "react-router-dom"
 import {RegisterSchema, LoginSchema} from "./ValidationSchema"
 import {axiosAuth} from "../utils/axiosAuth"
 import axios from "axios"
+import {AppContext, actn} from "Context"
 
 const OnboardingForm = props => {
     const winHistory = useHistory()
+    const {state, dispatch} = useContext(AppContext)
 
     const isLogin = props.match.url.includes("login")
 
@@ -15,7 +17,7 @@ const OnboardingForm = props => {
     })
 
     const onSubmit = data => {
-        console.log("data", data)
+        dispatch({type: actn.isLoading, payload: true})
         // object to send in body
         let reqBody = {
             username: data.username,
@@ -29,52 +31,72 @@ const OnboardingForm = props => {
                   password2: data.confirm_password,
               }
 
-        console.log(reqBody, "REQBODY")
+        const url =
+            process.env.NODE_ENV === "production"
+                ? "https://ant-mud.herokuapp.com/api/"
+                : "http://localhost:8000/api/"
 
         axios
-            .post(
-                `http://127.0.0.1:8000/api/${
-                    isLogin ? "login" : "registration"
-                }/`,
-                {...reqBody},
-            )
+            .post(url + `${isLogin ? "login" : "registration"}/`, {...reqBody})
             .then(res => {
                 console.log("from login", res)
                 data = res.data
-                // axiosAuth.defaults.headers.common['Authorization'] = `Token ${data.key}`
+                // update store
+                dispatch({
+                    type: actn.updateUser,
+                    payload: {userToken: data.key, isLoading: false},
+                })
+                // set auth headers
+                axios.defaults.headers.common[
+                    "Authorization"
+                ] = `Token ${data.key}`
                 // save token to local storage
                 localStorage.setItem("ant_game_token", data.key)
                 winHistory.push("/game")
             })
             .catch(response => {
+                dispatch({type: actn.isLoading, payload: false})
                 console.log("ERROR from Onboarding", response.response)
                 const {data} = response.response
-
+                const reqErrs = []
                 if (isLogin) {
                     if (data["non_field_errors"]) {
                         data["non_field_errors"].forEach(errmsg => {
-                            setError("password", "bad", errmsg)
+                            reqErrs.push({
+                                name: "password",
+                                type: "bad",
+                                message: errmsg,
+                            })
                         })
                     }
+                    setError(reqErrs)
                 }
                 // check for data.username
                 else {
                     if (data.username) {
                         data.username.forEach(errmsg => {
-                            setError("username", "bad", errmsg)
+                            reqErrs.push({
+                                name: "username",
+                                type: "bad",
+                                message: errmsg,
+                            })
                         })
                     }
                     // check for data.password
-                    else if (data.password) {
+                    if (data.password) {
                         data.password.forEach(errmsg => {
-                            setError("password", "bad", errmsg)
+                            reqErrs.push({
+                                name: "password",
+                                type: "bad",
+                                message: errmsg,
+                            })
                         })
                     }
+
+                    setError(reqErrs)
                 }
             })
     }
-
-    console.log("errors", errors)
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

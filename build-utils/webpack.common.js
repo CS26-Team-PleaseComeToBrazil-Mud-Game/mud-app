@@ -10,7 +10,7 @@ module.exports = (path, webpack, envKeys) => ({
         filename: "[name].[hash].js",
         path: path.resolve(__dirname, "../", "public"),
         // required for nested routes to work in development
-        publicPath: '/',
+        publicPath: "/",
         // used for codesplitting
         chunkFilename: "[name].[hash].js",
     },
@@ -75,7 +75,7 @@ module.exports = (path, webpack, envKeys) => ({
         // generate index.html
         new HtmlWebpackPlugin({
             template: "./src/index.html",
-            title: "Please Come To Brasil",
+            title: "Ant Adventure",
             favicon: "./src/assets/images/favicon.png",
         }),
         // inject environment variables
