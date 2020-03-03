@@ -1,6 +1,7 @@
 import React from "react"
 import {Switch, Route, Link} from "react-router-dom"
-import {makeStyles} from "@material-ui/core"
+import {makeStyles, ThemeProvider} from "@material-ui/core/styles"
+import theme from "./mui-theme"
 
 // Components
 import PrivateRoute from "PrivateRoute"
@@ -12,6 +13,7 @@ import Home from "./pages/Home"
 import Onboarding from "./pages/Onboarding"
 import Game from "./pages/Game"
 
+// background image
 const grass = require("./assets/images/cross-section-of-soil.webp")
 
 const useStyles = makeStyles(theme => ({
@@ -28,16 +30,18 @@ const useStyles = makeStyles(theme => ({
 const App = props => {
     const {container} = useStyles()
     return (
-        <div className={container}>
-            <Context>
-                <Header />
-                <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route path="/onboarding" component={Onboarding} />
-                    <PrivateRoute path="/game" component={Game} />
-                </Switch>
-            </Context>
-        </div>
+        <Context>
+            <ThemeProvider theme={theme}>
+                <div className={container}>
+                    <Header />
+                    <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route path="/onboarding" component={Onboarding} />
+                        <PrivateRoute path="/game" component={Game} />
+                    </Switch>
+                </div>
+            </ThemeProvider>
+        </Context>
     )
 }
 

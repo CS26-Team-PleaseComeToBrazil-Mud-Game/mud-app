@@ -65,6 +65,7 @@ module.exports = (path, webpack, envKeys) => ({
             ".jpeg",
             ".gif",
             ".svg",
+            ".webp",
         ],
     },
     plugins: [
