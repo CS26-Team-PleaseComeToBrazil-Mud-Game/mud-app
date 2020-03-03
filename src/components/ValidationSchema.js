@@ -16,14 +16,11 @@ const RegisterSchema = yup.object().shape({
     password: yup
         .string()
         .required(reqMsg)
-        .min(6, "Password must be at least six characters"),
+        .min(8, "Password must be at least eight characters"),
     confirm_password: yup
         .string()
         .required()
         .oneOf([yup.ref("password"), null], "Passwords Do Not Match"),
 })
 
-export  {
-    RegisterSchema,
-    LoginSchema,
-}
+export {RegisterSchema, LoginSchema}

@@ -1,4 +1,6 @@
 import React from "react"
+import {useHistory} from "react-router-dom"
+import clsx from "clsx"
 
 // MUI
 import {makeStyles} from "@material-ui/core/styles"
@@ -13,13 +15,32 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
+        color: "red",
     },
 }))
 
 function Header() {
-    const classes = useStyles()
+    const winHistory = useHistory()
+    const {title, menuButton} = useStyles()
 
-    return <p>Hi</p>
+    return (
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" className={clsx(title)}>
+                    Ant Adventure
+                </Typography>
+                <Button className={menuButton} variant="contained">
+                    Login
+                </Button>
+                <Button className={clsx(menuButton)} variant="contained">
+                    Register
+                </Button>
+                <Button className={clsx(menuButton)} variant="contained">
+                    Logout
+                </Button>
+            </Toolbar>
+        </AppBar>
+    )
 }
 
 export default Header

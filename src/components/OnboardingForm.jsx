@@ -1,13 +1,16 @@
 import React from "react"
-import {useForm} from "react-hook-form"
+import {useForm, ErrorMessage} from "react-hook-form"
+import {useHistory} from "react-router-dom"
 import {RegisterSchema, LoginSchema} from "./ValidationSchema"
 import {axiosAuth} from "../utils/axiosAuth"
 import axios from "axios"
 
 const OnboardingForm = props => {
+    const winHistory = useHistory()
+
     const isLogin = props.match.url.includes("login")
 
-    const {register, handleSubmit, errors} = useForm({
+    const {register, handleSubmit, errors, setError} = useForm({
         validationSchema: isLogin ? LoginSchema : RegisterSchema,
     })
 
@@ -25,25 +28,49 @@ const OnboardingForm = props => {
                   password1: data.password,
                   password2: data.confirm_password,
               }
-        console.log(reqBody,'REQBODY')
+
+        console.log(reqBody, "REQBODY")
+
         axios
-            .post(`http://127.0.0.1:8000/api/${isLogin ? "login" : "registration"}/`, {...reqBody})
+            .post(
+                `http://127.0.0.1:8000/api/${
+                    isLogin ? "login" : "registration"
+                }/`,
+                {...reqBody},
+            )
             .then(res => {
                 console.log("from login", res)
                 data = res.data
                 // axiosAuth.defaults.headers.common['Authorization'] = `Token ${data.key}`
                 // save token to local storage
                 localStorage.setItem("ant_game_token", data.key)
+                winHistory.push("/game")
             })
             .catch(response => {
                 console.log("ERROR from Onboarding", response.response)
-                // if isLogin
-                // check for data.invalid
-                //else
+                const {data} = response.response
+
+                if (isLogin) {
+                    if (data["non_field_errors"]) {
+                        data["non_field_errors"].forEach(errmsg => {
+                            setError("password", "bad", errmsg)
+                        })
+                    }
+                }
                 // check for data.username
-                // errors.username.message = data.username[0]
-                // check for data.password
-                // errors.password.message = data.password1[0]
+                else {
+                    if (data.username) {
+                        data.username.forEach(errmsg => {
+                            setError("username", "bad", errmsg)
+                        })
+                    }
+                    // check for data.password
+                    else if (data.password) {
+                        data.password.forEach(errmsg => {
+                            setError("password", "bad", errmsg)
+                        })
+                    }
+                }
             })
     }
 
@@ -57,23 +84,31 @@ const OnboardingForm = props => {
                 name="username"
                 ref={register}
             />
+            <ErrorMessage errors={errors} name="username" as="div" />
+
             <input
                 type={isLogin ? "password" : "text"}
                 placeholder="Password"
                 name="password"
                 ref={register}
             />
+            <ErrorMessage errors={errors} name="password" as="div" />
+
             {!isLogin && (
-                <input
-                    type="text"
-                    placeholder="Confirm Password"
-                    name="confirm_password"
-                    ref={register}
-                />
+                <>
+                    <input
+                        type="text"
+                        placeholder="Confirm Password"
+                        name="confirm_password"
+                        ref={register}
+                    />
+                    <ErrorMessage
+                        errors={errors}
+                        name="confirm_password"
+                        as="div"
+                    />
+                </>
             )}
-            {!isLogin &&
-                errors["Confirm Password"] &&
-                errors["Confirm Password"].message}
             <input type="submit" />
         </form>
     )
