@@ -9,6 +9,8 @@ module.exports = (path, webpack, envKeys) => ({
     output: {
         filename: "[name].[hash].js",
         path: path.resolve(__dirname, "../", "public"),
+        // required for nested routes to work in development
+        publicPath: "/",
         // used for codesplitting
         chunkFilename: "[name].[hash].js",
     },
@@ -21,7 +23,7 @@ module.exports = (path, webpack, envKeys) => ({
             },
             {
                 // Process images
-                test: /\.(png|jpe?g|gif|svg)$/,
+                test: /\.(png|jpe?g|webp|gif|svg)$/,
                 use: [
                     {
                         loader: "file-loader",
@@ -63,6 +65,7 @@ module.exports = (path, webpack, envKeys) => ({
             ".jpeg",
             ".gif",
             ".svg",
+            ".webp",
         ],
     },
     plugins: [
@@ -73,7 +76,7 @@ module.exports = (path, webpack, envKeys) => ({
         // generate index.html
         new HtmlWebpackPlugin({
             template: "./src/index.html",
-            title: "Please Come To Brasil",
+            title: "Ant Adventure",
             favicon: "./src/assets/images/favicon.png",
         }),
         // inject environment variables
