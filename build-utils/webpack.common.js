@@ -23,7 +23,7 @@ module.exports = (path, webpack, envKeys) => ({
             },
             {
                 // Process images
-                test: /\.(png|jpe?g|gif|svg)$/,
+                test: /\.(png|jpe?g|webp|gif|svg)$/,
                 use: [
                     {
                         loader: "file-loader",
