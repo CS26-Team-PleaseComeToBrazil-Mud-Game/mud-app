@@ -5,8 +5,32 @@ import {RegisterSchema, LoginSchema} from "./ValidationSchema"
 import {axiosAuth} from "../utils/axiosAuth"
 import axios from "axios"
 import {AppContext, actn} from "Context"
+//Mui
+import CircularProgress from "@material-ui/core/CircularProgress"
+import Input from "@material-ui/core/Input"
+import Paper from "@material-ui/core/Paper"
+import Grid from "@material-ui/core/Grid"
+import {makeStyles} from "@material-ui/core/styles"
+import Button from "@material-ui/core/Button"
+import Typography from "@material-ui/core/Typography"
+
+const useStyles = makeStyles(theme => ({
+    paper: {
+        backgroundColor: theme.palette.primary.main,
+        width: "100%",
+        maxWidth: "500px",
+        padding: theme.spacing(2),
+        margin: "0 auto",
+    },
+    error: {
+        marginTop: theme.spacing(2),
+        color: theme.palette.secondary.dark,
+        fontWeight: 600,
+    },
+}))
 
 const OnboardingForm = props => {
+    const classes = useStyles()
     const winHistory = useHistory()
     const {state, dispatch} = useContext(AppContext)
 
@@ -99,40 +123,79 @@ const OnboardingForm = props => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <input
-                type="text"
-                placeholder="Username"
-                name="username"
-                ref={register}
-            />
-            <ErrorMessage errors={errors} name="username" as="div" />
+        <Paper className={classes.paper}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container direction="column" align="center" spacing={4}>
+                    <Grid item xs={12}>
+                        <Typography variant="h4">
+                            {isLogin ? "Login" : "Register"}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Input
+                            type="text"
+                            fullWidth
+                            placeholder="Username"
+                            name="username"
+                            inputRef={register}
+                        />
+                        <ErrorMessage
+                            errors={errors}
+                            name="username"
+                            as="div"
+                            className={classes.error}
+                        />
+                    </Grid>
 
-            <input
-                type={isLogin ? "password" : "text"}
-                placeholder="Password"
-                name="password"
-                ref={register}
-            />
-            <ErrorMessage errors={errors} name="password" as="div" />
-
-            {!isLogin && (
-                <>
-                    <input
-                        type="text"
-                        placeholder="Confirm Password"
-                        name="confirm_password"
-                        ref={register}
-                    />
-                    <ErrorMessage
-                        errors={errors}
-                        name="confirm_password"
-                        as="div"
-                    />
-                </>
-            )}
-            <input type="submit" />
-        </form>
+                    <Grid item xs={12}>
+                        <Input
+                            type={isLogin ? "password" : "text"}
+                            placeholder="Password"
+                            name="password"
+                            inputRef={register}
+                            fullWidth
+                        />
+                        <ErrorMessage
+                            errors={errors}
+                            name="password"
+                            as="div"
+                            className={classes.error}
+                        />
+                    </Grid>
+                    {!isLogin && (
+                        <Grid item xs={12}>
+                            <Input
+                                type="text"
+                                placeholder="Confirm Password"
+                                name="confirm_password"
+                                inputRef={register}
+                                fullWidth
+                            />
+                            <ErrorMessage
+                                errors={errors}
+                                className={classes.error}
+                                name="confirm_password"
+                                as="div"
+                            />
+                        </Grid>
+                    )}
+                    <Grid item sx={6}>
+                        {state.isLoading ? (
+                            <Button variant="contained" disabled={true}>
+                                <CircularProgress />
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleSubmit(onSubmit)}
+                                variant="contained"
+                            >
+                                Submit
+                            </Button>
+                        )}
+                    </Grid>
+                </Grid>
+            </form>
+        </Paper>
     )
 }
 
