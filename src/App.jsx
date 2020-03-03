@@ -17,29 +17,29 @@ import Game from "./pages/Game"
 const grass = require("./assets/images/cross-section-of-soil.webp")
 
 const useStyles = makeStyles(theme => ({
-    container: {
-        backgroundImage: `url(${grass.default})`,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        minWidth: "100vw",
+    "@global": {
+        body: {
+            backgroundImage: `url(${grass.default})`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            minHeight: "100vh",
+        },
     },
 }))
 
 const App = props => {
-    const {container} = useStyles()
+    const globalStyles = useStyles()
+
     return (
         <Context>
             <ThemeProvider theme={theme}>
-                <div className={container}>
-                    <Header />
-                    <Switch>
-                        <Route exact path="/" component={Home} />
-                        <Route path="/onboarding" component={Onboarding} />
-                        <PrivateRoute path="/game" component={Game} />
-                    </Switch>
-                </div>
+                <Header />
+                <Switch>
+                    <Route exact path="/" component={Home} />
+                    <Route path="/onboarding" component={Onboarding} />
+                    <PrivateRoute path="/game" component={Game} />
+                </Switch>
             </ThemeProvider>
         </Context>
     )

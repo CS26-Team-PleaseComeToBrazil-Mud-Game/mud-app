@@ -45,5 +45,10 @@ export default createMuiTheme({
                 },
             },
         },
+        MuiPaper: {
+            root: {
+                backgroundColor: BROWN,
+            },
+        },
     },
 })
