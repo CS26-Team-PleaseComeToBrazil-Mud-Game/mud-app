@@ -1,7 +1,8 @@
 import React, {useContext} from "react"
 import {useHistory} from "react-router-dom"
 import clsx from "clsx"
-
+import axios from "axios"
+import {useCookies} from "react-cookie"
 // Components
 import {AppContext, actn} from "Context"
 
@@ -26,10 +27,38 @@ const useStyles = makeStyles(theme => ({
 function Header() {
     const winHistory = useHistory()
     const {title, menuButton, toolbarOffset} = useStyles()
+    const [cookies, setCookie, removeCookie] = useCookies(["csrftoken"])
     const {
         state: {userToken},
         dispatch,
     } = useContext(AppContext)
+
+    function logout() {
+        axios({
+            method: "post",
+            url:
+                process.env.NODE_ENV === "production"
+                    ? "https://ant-mud.herokuapp.com/api/logout/"
+                    : "http://localhost:8000/api/logout/",
+            // tell server which session to end
+            withCredentials: true,
+            xsrfCookieName: "csrftoken",
+            xsrfHeaderName: "X-CSRFToken",
+        })
+            .then(res => {
+                console.log("logout success", res)
+                removeCookie("crftoken")
+            })
+            .catch(err => console.log("logout error", err))
+        // remove token from local storage
+        window.localStorage.removeItem("ant_game_token")
+        // remove token from store
+        dispatch({
+            type: actn.updateUser,
+            payload: {userToken: null},
+        })
+        winHistory.push("/")
+    }
 
     return (
         <>
@@ -64,21 +93,13 @@ function Header() {
                         <Button
                             className={clsx(menuButton)}
                             variant="contained"
-                            onClick={() => {
-                                window.localStorage.removeItem("ant_game_token")
-                                dispatch({
-                                    type: actn.updateUser,
-                                    payload: {userToken: null},
-                                })
-                                winHistory.push("/")
-                            }}
+                            onClick={logout}
                         >
                             Logout
                         </Button>
                     )}
                 </Toolbar>
             </AppBar>
-            {/* <div className={toolbarOffset} /> */}
         </>
     )
 }

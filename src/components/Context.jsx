@@ -5,7 +5,10 @@ export const actn = {
     updateUser: "updateUser",
 }
 
-const initStore = {userToken: null, isLoading: false}
+const initStore = {
+    userToken: localStorage.getItem("ant_game_token"),
+    isLoading: false,
+}
 
 const reducer = (state, action) => {
     switch (action.type) {

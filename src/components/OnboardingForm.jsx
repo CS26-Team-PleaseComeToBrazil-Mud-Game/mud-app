@@ -5,6 +5,8 @@ import {RegisterSchema, LoginSchema} from "./ValidationSchema"
 import {axiosAuth} from "../utils/axiosAuth"
 import axios from "axios"
 import {AppContext, actn} from "Context"
+import {useCookies} from "react-cookie"
+
 //Mui
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Input from "@material-ui/core/Input"
@@ -33,6 +35,7 @@ const OnboardingForm = props => {
     const classes = useStyles()
     const winHistory = useHistory()
     const {state, dispatch} = useContext(AppContext)
+    const [cookies, setCookie, removeCookie] = useCookies(["csrftoken"])
 
     const isLogin = props.match.url.includes("login")
 
@@ -61,9 +64,18 @@ const OnboardingForm = props => {
                 : "http://localhost:8000/api/"
 
         axios
-            .post(url + `${isLogin ? "login" : "registration"}/`, {...reqBody})
+            .post(
+                url + `${isLogin ? "login" : "registration"}/`,
+                {...reqBody},
+                {
+                    withCredentials: true,
+                    xsrfCookieName: "csrftoken",
+                    xsrfHeaderName: "X-CSRFToken",
+                },
+            )
             .then(res => {
                 console.log("from login", res)
+
                 data = res.data
                 // update store
                 dispatch({
@@ -122,6 +134,7 @@ const OnboardingForm = props => {
             })
     }
 
+    console.log(cookies)
     return (
         <Paper className={classes.paper}>
             <form onSubmit={handleSubmit(onSubmit)}>
