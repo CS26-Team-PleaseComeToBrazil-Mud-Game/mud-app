@@ -1,56 +1,51 @@
-import React, {useRef, useEffect} from "react"
+import React, {useState, useContext, useEffect} from "react"
+import axios from "axios"
+// import test_data from "../../test-utils/mock_data/sample_res"
+// import test_data3x3 from "../../test-utils/mock_data/sample_res_3x3"
+// import test_data10x10 from "../../test-utils/mock_data/sample_res_10x10"
 
-import tiles from "../utils/tiles"
-import atlasImage from "../assets/images/tunnel_tiles.webp"
+//Components
+import MapCanvas from "../components/MapCanvas"
 
-function Game(props) {
-    const canvas = useRef(null)
-    const image = useRef(null)
-    const {rooms, width, height} = props.data
+// Mui
+import Grid from "@material-ui/core/Grid"
+
+function Game() {
+    const [world, setWorld] = useState(null)
+    // store world data in context?
 
     useEffect(() => {
-        const ctx = canvas.current.getContext("2d")
-        const imctx = image.current
+        const source = axios.CancelToken.source()
 
-        imctx.onload = () => {
-            for (let row = 0; row < height; row++) {
-                for (let col = 0; col < width; col++) {
-                    // get tile from room
-                    const tile = rooms[`r${row}c${col}`].tile_num
-                    // draw the tile to canvas
-                    ctx.drawImage(
-                        imctx,
-                        tiles[tile].x,
-                        tiles[tile].y,
-                        70,
-                        70,
-                        row * 70,
-                        col * 70,
-                        70,
-                        70,
-                    )
+        async function fetchData() {
+            try {
+                const res = await axios.get("/adv/world/", {
+                    cancelToken: source.token,
+                })
+                // console.log("res data", res.data)
+                setWorld({...res.data})
+            } catch (err) {
+                // ignore error raised by canceling request
+                if (axios.isCancel(err)) {
+                    return
                 }
+
+                // console.log("Error fetching /adv/world/", err.response)
+                return
             }
         }
+
+        fetchData()
+        // cancel api request on dismount
+        return () => source.cancel()
     }, [])
 
     return (
-        <>
-            <canvas
-                ref={canvas}
-                width={width * 70}
-                height={height * 70}
-                style={{border: "5px solid red"}}
-                id="canvas"
-            ></canvas>
-            <img
-                ref={image}
-                src={atlasImage}
-                width={1050}
-                height={70}
-                style={{visibility: "hidden"}}
-            ></img>
-        </>
+        <Grid container spacing={4}>
+            <Grid item xs={12} md={6}>
+                {world && <MapCanvas data={world} />}
+            </Grid>
+        </Grid>
     )
 }
 
