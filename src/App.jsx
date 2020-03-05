@@ -2,6 +2,7 @@ import React from "react"
 import {Switch, Route, Link} from "react-router-dom"
 import {makeStyles, ThemeProvider} from "@material-ui/core/styles"
 import theme from "./mui-theme"
+import axios from "axios"
 
 // Components
 import PrivateRoute from "PrivateRoute"
@@ -27,6 +28,11 @@ const useStyles = makeStyles(theme => ({
         },
     },
 }))
+
+axios.defaults.baseURL =
+    process.env.NODE_ENV === "production"
+        ? "https://ant-mud.herokuapp.com/api/"
+        : "http://localhost:8000/api/"
 
 const App = props => {
     const globalStyles = useStyles()
