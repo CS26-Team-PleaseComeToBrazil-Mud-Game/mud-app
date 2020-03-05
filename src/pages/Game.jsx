@@ -1,40 +1,23 @@
 import React, {useRef, useEffect} from "react"
 
-import {response_data, tiles} from "../utils/tiles"
-import atlasImage from "../assets/images/tunnel_tiles.png"
+import tiles from "../utils/tiles"
+import atlasImage from "../assets/images/tunnel_tiles.webp"
 
-// var map = {
-//     cols: 10,
-//     rows: 10,
-//     tsize: 64,
-//     tiles: [1, 2, 3, 4, 5, 1, 2, 3, 4],
-
-//     getTile: function(col, row) {
-//         return this.tiles[row * map.cols + col]
-//     },
-// }
-
-function Game() {
+function Game(props) {
     const canvas = useRef(null)
     const image = useRef(null)
-    const {rooms, width, height} = response_data
+    const {rooms, width, height} = props.data
 
     useEffect(() => {
         const ctx = canvas.current.getContext("2d")
         const imctx = image.current
 
-        imctx.onload = () =>{
-            for (let row = 0; row < response_data.height; row++) {
-                // console.log('row',row)
-                for (let col = 0; col < response_data.width; col++) {
-                // console.log('col',col)
+        imctx.onload = () => {
+            for (let row = 0; row < height; row++) {
+                for (let col = 0; col < width; col++) {
                     // get tile from room
                     const tile = rooms[`r${row}c${col}`].tile_num
-                    console.log(tile)
                     // draw the tile to canvas
-                        console.log(`tile coordinates x: ${tiles[tile].x} y: ${tiles[tile].y}`)
-                        let x = 70
-                        let y = 0
                     ctx.drawImage(
                         imctx,
                         tiles[tile].x,
@@ -63,7 +46,7 @@ function Game() {
             <img
                 ref={image}
                 src={atlasImage}
-                width={350}
+                width={1050}
                 height={70}
                 style={{visibility: "hidden"}}
             ></img>
