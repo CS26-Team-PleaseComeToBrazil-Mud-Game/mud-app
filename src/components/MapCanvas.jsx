@@ -15,9 +15,10 @@ const MapCanvas = props => {
 
     useEffect(() => {
         const ctx = canvas.current.getContext("2d")
-        const ctx2 = canvas2.current.getContext("2d")
         const imctx = image.current
+
         const sprctx = spriteIm.current
+        const ctx2 = canvas2.current.getContext("2d")
 
         imctx.onload = () => {
             for (let row = 0; row < height; row++) {
@@ -41,16 +42,21 @@ const MapCanvas = props => {
             }
         }
         sprctx.onload = () => {
-
-            // cooridanates * tileSize
-            // add 15 to x and 22 to y
-            draw(4 * 70 + 15, 7 * 70 + 22)
-            function draw(x, y){
-                
-                ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, x, y, tileSize, tileSize)
-            }
+            ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.data.start_col * tileSize + 15, props.data.start_row * tileSize + 22, tileSize, tileSize)
         }
+    
+
     }, [])
+
+    useEffect(()=>{
+        
+        const sprctx = spriteIm.current
+        const ctx2 = canvas2.current.getContext("2d")
+
+        ctx2.clearRect(0,0,ctx2.canvas.width,ctx2.canvas.height) 
+        ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.position.col * tileSize + 15, props.position.row * tileSize + 22, tileSize, tileSize)
+
+    }, [props.position.row, props.position.col])
 
     return (
         <>
@@ -84,6 +90,7 @@ const MapCanvas = props => {
 
 MapCanvas.propTypes = {
     data: propTypes.object,
+    position: propTypes.object,
 }
 
 export default MapCanvas

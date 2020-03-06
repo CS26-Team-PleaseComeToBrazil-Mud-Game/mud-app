@@ -38,12 +38,20 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const movePlayer = (direction) => {
-    console.log(direction)
+const movePlayer = (direction, cb) => {
+    axios.post('/adv/move/', {direction})
+        .then(res => {
+            if(res.data.error_msg){
+                return 
+            }                 
+            cb({row: res.data.new_row, col: res.data.new_col})  
+           
+        }).catch(err => console.log(`Error moving player: ${err}`))
 };
 
 function Game() {
     const [world, setWorld] = useState(null)
+    const [playerPosition, setPlayerPosition] = useState({})
     // store world data in context?
     const classes = useStyles()
     useEffect(() => {
@@ -51,25 +59,26 @@ function Game() {
 
         
 
-        async function fetchData() {
+        async function fetchWorld() {
             try {
                 const res = await axios.get("/adv/world/", {
                     cancelToken: source.token,
                 })
-                // console.log("res data", res.data)
+
                 setWorld({...res.data})
+                setPlayerPosition({row: res.data.start_row, col: res.data.start_col})
             } catch (err) {
                 // ignore error raised by canceling request
                 if (axios.isCancel(err)) {
                     return
                 }
 
-                // console.log("Error fetching /adv/world/", err.response)
+
                 return
             }
         }
 
-        fetchData()
+        fetchWorld()
         // cancel api request on dismount
         return () => source.cancel()
     }, [])
@@ -78,18 +87,18 @@ function Game() {
         <>
             <Grid container spacing={4}>
                 <Grid item xs={12} md={6} style={{position: "relative"}}>
-                    {world && <MapCanvas data={world} />}
+                    {world && playerPosition && <MapCanvas data={world} position={playerPosition} />}
                 </Grid>
             </Grid>
 
            
             <div className={classes.controllerDiv}>
-                <div className={classes.topDiv} onClick={() => movePlayer('n')}></div>
+                <div className={classes.topDiv} onClick={() => movePlayer('n', setPlayerPosition)}></div>
                 <div className={classes.midDiv}>
-                    <div className={classes.leftRight} onClick={() => movePlayer('w')}></div>
-                    <div className={classes.leftRight} onClick={() => movePlayer('e')}></div>
+                    <div className={classes.leftRight} onClick={() => movePlayer('w', setPlayerPosition)}></div>
+                    <div className={classes.leftRight} onClick={() => movePlayer('e', setPlayerPosition)}></div>
                 </div>
-                <div className={classes.topDiv} onClick={() => movePlayer('s')}></div>
+                <div className={classes.topDiv} onClick={() => movePlayer('s', setPlayerPosition)}></div>
             </div>
         </>
     )

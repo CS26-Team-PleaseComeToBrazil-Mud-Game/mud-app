@@ -55,16 +55,9 @@ const OnboardingForm = props => {
                   password2: data.confirm_password,
               }
 
-        // const url =
-        // process.env.NODE_ENV === "production"
-        // ? "https://ant-mud.herokuapp.com/api/"
-        // : "http://localhost:8000/api/"
-
-        // .post(url + `${isLogin ? "login" : "registration"}/`, {...reqBody})
-        axios
+       axios
             .post(`${isLogin ? "login" : "registration"}/`, {...reqBody})
             .then(res => {
-                // console.log("from login", res)
                 data = res.data
                 // update store
                 dispatch({
