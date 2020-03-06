@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         height: '43px',
         width: "40%",
+        cursor: 'pointer'
     },
     midDiv:{
         display: 'flex',
@@ -32,9 +33,14 @@ const useStyles = makeStyles(theme => ({
         height: '40px'
     },
     leftRight: {
-        width: '40px'
+        width: '40px',
+        cursor: 'pointer'
     }
-}))
+}));
+
+const movePlayer = (direction) => {
+    console.log(direction)
+};
 
 function Game() {
     const [world, setWorld] = useState(null)
@@ -42,6 +48,8 @@ function Game() {
     const classes = useStyles()
     useEffect(() => {
         const source = axios.CancelToken.source()
+
+        
 
         async function fetchData() {
             try {
@@ -76,12 +84,12 @@ function Game() {
 
            
             <div className={classes.controllerDiv}>
-                <div className={classes.topDiv}></div>
+                <div className={classes.topDiv} onClick={() => movePlayer('n')}></div>
                 <div className={classes.midDiv}>
-                    <div className={classes.leftRight}></div>
-                    <div className={classes.leftRight}></div>
+                    <div className={classes.leftRight} onClick={() => movePlayer('w')}></div>
+                    <div className={classes.leftRight} onClick={() => movePlayer('e')}></div>
                 </div>
-                <div className={classes.topDiv}></div>
+                <div className={classes.topDiv} onClick={() => movePlayer('s')}></div>
             </div>
         </>
     )
