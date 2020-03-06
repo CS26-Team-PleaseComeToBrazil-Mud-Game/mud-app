@@ -26,6 +26,7 @@ const useStyles = makeStyles(theme => ({
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             minHeight: "100vh",
+            overflowX: "hidden",
         },
     },
 }))
