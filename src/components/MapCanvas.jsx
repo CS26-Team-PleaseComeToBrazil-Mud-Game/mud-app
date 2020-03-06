@@ -1,17 +1,24 @@
 import React, {useState, useRef, useEffect} from "react"
 import tiles from "../utils/tiles"
 import atlasImage from "../assets/images/tunnel_tiles.webp"
+import sprite from "../assets/images/ant.webp"
 import propTypes from "prop-types"
 
 const MapCanvas = props => {
     const canvas = useRef(null)
+    const canvas2 = useRef(null)
     const image = useRef(null)
+    const spriteIm = useRef(null)
     const {rooms, width, height} = props.data
+    
     const [tileSize, setTileSize] = useState(70)
 
     useEffect(() => {
         const ctx = canvas.current.getContext("2d")
         const imctx = image.current
+
+        const sprctx = spriteIm.current
+        const ctx2 = canvas2.current.getContext("2d")
 
         imctx.onload = () => {
             for (let row = 0; row < height; row++) {
@@ -34,7 +41,22 @@ const MapCanvas = props => {
                 }
             }
         }
+        sprctx.onload = () => {
+            ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.data.start_col * tileSize + 15, props.data.start_row * tileSize + 22, tileSize, tileSize)
+        }
+    
+
     }, [])
+
+    useEffect(()=>{
+        
+        const sprctx = spriteIm.current
+        const ctx2 = canvas2.current.getContext("2d")
+
+        ctx2.clearRect(0,0,ctx2.canvas.width,ctx2.canvas.height) 
+        ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.position.col * tileSize + 15, props.position.row * tileSize + 22, tileSize, tileSize)
+
+    }, [props.position.row, props.position.col])
 
     return (
         <>
@@ -42,14 +64,24 @@ const MapCanvas = props => {
                 ref={canvas}
                 width={width * tileSize}
                 height={height * tileSize}
-                style={{border: "5px solid red"}}
                 id="canvas"
             ></canvas>
+             <canvas
+                ref={canvas2}
+                width={width * tileSize}
+                height={height * tileSize}
+                style={{ position: "absolute", top: "16", left: "16px"}}
+            />
             <img
                 ref={image}
                 src={atlasImage}
                 width={1050}
                 height={70}
+                style={{visibility: "hidden"}}
+            ></img>
+            <img
+                ref={spriteIm}
+                src={sprite}
                 style={{visibility: "hidden"}}
             ></img>
         </>
@@ -58,6 +90,7 @@ const MapCanvas = props => {
 
 MapCanvas.propTypes = {
     data: propTypes.object,
+    position: propTypes.object,
 }
 
 export default MapCanvas

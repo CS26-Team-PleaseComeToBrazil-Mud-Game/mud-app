@@ -1,6 +1,7 @@
 import React from "react"
 import {Switch, Route, Link} from "react-router-dom"
 import {makeStyles, ThemeProvider} from "@material-ui/core/styles"
+import Container from "@material-ui/core/Container"
 import theme from "./mui-theme"
 import axios from "axios"
 
@@ -41,11 +42,13 @@ const App = props => {
         <Context>
             <ThemeProvider theme={theme}>
                 <Header />
-                <Switch>
-                    <Route exact path="/" component={Home} />
-                    <Route path="/onboarding" component={Onboarding} />
-                    <PrivateRoute path="/game" component={Game} />
-                </Switch>
+                <Container>
+                    <Switch>
+                        <Route exact path="/" component={Home} />
+                        <Route path="/onboarding" component={Onboarding} />
+                        <PrivateRoute path="/game" component={Game} />
+                    </Switch>
+                </Container>
             </ThemeProvider>
         </Context>
     )
