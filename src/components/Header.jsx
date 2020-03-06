@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
     title: {
         flexGrow: 1,
         color: "red",
+        cursor: "pointer",
     },
     toolbarOffset: theme.mixins.toolbar,
 }))
@@ -35,7 +36,12 @@ function Header() {
         <>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" className={clsx(title)}>
+                    <Typography
+                        variant="h6"
+                        className={title}
+                        title="return to home page"
+                        onClick={() => winHistory.push("/")}
+                    >
                         Ant Adventure
                     </Typography>
                     {!userToken && (

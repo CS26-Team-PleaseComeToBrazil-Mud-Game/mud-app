@@ -10,7 +10,7 @@ const MapCanvas = props => {
     const image = useRef(null)
     const spriteIm = useRef(null)
     const {rooms, width, height} = props.data
-    
+
     const [tileSize, setTileSize] = useState(70)
 
     useEffect(() => {
@@ -42,20 +42,36 @@ const MapCanvas = props => {
             }
         }
         sprctx.onload = () => {
-            ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.data.start_col * tileSize + 15, props.data.start_row * tileSize + 22, tileSize, tileSize)
+            ctx2.drawImage(
+                sprctx,
+                0,
+                0,
+                tileSize,
+                tileSize,
+                props.data.start_col * tileSize + 15,
+                props.data.start_row * tileSize + 22,
+                tileSize,
+                tileSize,
+            )
         }
-    
-
     }, [])
 
-    useEffect(()=>{
-        
+    useEffect(() => {
         const sprctx = spriteIm.current
         const ctx2 = canvas2.current.getContext("2d")
 
-        ctx2.clearRect(0,0,ctx2.canvas.width,ctx2.canvas.height) 
-        ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, props.position.col * tileSize + 15, props.position.row * tileSize + 22, tileSize, tileSize)
-
+        ctx2.clearRect(0, 0, ctx2.canvas.width, ctx2.canvas.height)
+        ctx2.drawImage(
+            sprctx,
+            0,
+            0,
+            tileSize,
+            tileSize,
+            props.position.col * tileSize + 15,
+            props.position.row * tileSize + 22,
+            tileSize,
+            tileSize,
+        )
     }, [props.position.row, props.position.col])
 
     return (
@@ -66,11 +82,11 @@ const MapCanvas = props => {
                 height={height * tileSize}
                 id="canvas"
             ></canvas>
-             <canvas
+            <canvas
                 ref={canvas2}
                 width={width * tileSize}
                 height={height * tileSize}
-                style={{ position: "absolute", top: "16", left: "16px"}}
+                style={{position: "absolute", top: "0", left: "0"}}
             />
             <img
                 ref={image}

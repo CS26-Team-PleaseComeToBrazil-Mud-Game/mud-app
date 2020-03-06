@@ -13,41 +13,52 @@ import Grid from "@material-ui/core/Grid"
 
 const useStyles = makeStyles(theme => ({
     controllerDiv: {
+        margin: "0 auto",
         backgroundImage: `url(${controller})`,
-        maxWidth: "125px",
-        height: "125px",
+        width: "120px",
+        height: "120px",
+        backgroundPosition: "center",
+    },
+    centeredButtonRow: {
         display: "flex",
-        flexDirection: "column",
-        alignItems: 'center'
+        justifyContent: "center",
+        alignItems: "center",
+        height: "40px",
     },
-    topDiv: {
-        textAlign: 'center',
-        height: '43px',
-        width: "40%",
-        cursor: 'pointer'
+    midControllerRow: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "40px",
     },
-    midDiv:{
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: '100%',
-        height: '40px'
+    controllerButton: {
+        margin: "4px",
+        height: "25px",
+        width: "25px",
+        borderRadius: "50%",
+        backgroundColor: "red",
+        cursor: "pointer",
     },
-    leftRight: {
-        width: '40px',
-        cursor: 'pointer'
-    }
-}));
+    canvasWrapper: {
+        width: "700px",
+        height: "700px",
+        position: "relative",
+        margin: "16px auto",
+        pointerEvents: "none",
+    },
+}))
 
 const movePlayer = (direction, cb) => {
-    axios.post('/adv/move/', {direction})
+    axios
+        .post("/adv/move/", {direction})
         .then(res => {
-            if(res.data.error_msg){
-                return 
-            }                 
-            cb({row: res.data.new_row, col: res.data.new_col})  
-           
-        }).catch(err => console.log(`Error moving player: ${err}`))
-};
+            if (res.data.error_msg) {
+                return
+            }
+            cb({row: res.data.new_row, col: res.data.new_col})
+        })
+        .catch(err => console.log(`Error moving player: ${err}`))
+}
 
 function Game() {
     const [world, setWorld] = useState(null)
@@ -57,8 +68,6 @@ function Game() {
     useEffect(() => {
         const source = axios.CancelToken.source()
 
-        
-
         async function fetchWorld() {
             try {
                 const res = await axios.get("/adv/world/", {
@@ -66,13 +75,15 @@ function Game() {
                 })
 
                 setWorld({...res.data})
-                setPlayerPosition({row: res.data.start_row, col: res.data.start_col})
+                setPlayerPosition({
+                    row: res.data.start_row,
+                    col: res.data.start_col,
+                })
             } catch (err) {
                 // ignore error raised by canceling request
                 if (axios.isCancel(err)) {
                     return
                 }
-
 
                 return
             }
@@ -85,21 +96,41 @@ function Game() {
 
     return (
         <>
-            <Grid container spacing={4}>
-                <Grid item xs={12} md={6} style={{position: "relative"}}>
-                    {world && playerPosition && <MapCanvas data={world} position={playerPosition} />}
+            <Grid container direction="column" justify="center" spacing={4}>
+                <Grid item xs={12}>
+                    <div className={classes.canvasWrapper}>
+                        {world && playerPosition && (
+                            <MapCanvas data={world} position={playerPosition} />
+                        )}
+                    </div>
                 </Grid>
-            </Grid>
-
-           
-            <div className={classes.controllerDiv}>
-                <div className={classes.topDiv} onClick={() => movePlayer('n', setPlayerPosition)}></div>
-                <div className={classes.midDiv}>
-                    <div className={classes.leftRight} onClick={() => movePlayer('w', setPlayerPosition)}></div>
-                    <div className={classes.leftRight} onClick={() => movePlayer('e', setPlayerPosition)}></div>
+                {/* <Grid item xs={12}> */}
+                <div className={classes.controllerDiv}>
+                    <div className={classes.centeredButtonRow}>
+                        <div
+                            className={classes.controllerButton}
+                            onClick={() => movePlayer("n", setPlayerPosition)}
+                        ></div>
+                    </div>
+                    <div className={classes.midControllerRow}>
+                        <div
+                            className={classes.controllerButton}
+                            onClick={() => movePlayer("w", setPlayerPosition)}
+                        ></div>
+                        <div
+                            className={classes.controllerButton}
+                            onClick={() => movePlayer("e", setPlayerPosition)}
+                        ></div>
+                    </div>
+                    <div className={classes.centeredButtonRow}>
+                        <div
+                            className={classes.controllerButton}
+                            onClick={() => movePlayer("s", setPlayerPosition)}
+                        ></div>
+                    </div>
                 </div>
-                <div className={classes.topDiv} onClick={() => movePlayer('s', setPlayerPosition)}></div>
-            </div>
+                {/* </Grid> */}
+            </Grid>
         </>
     )
 }
