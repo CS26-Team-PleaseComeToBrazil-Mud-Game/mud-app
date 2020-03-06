@@ -70,7 +70,7 @@ const MapCanvas = props => {
                 ref={canvas2}
                 width={width * tileSize}
                 height={height * tileSize}
-                style={{ position: "absolute", top: "16", left: "16px"}}
+                style={{ position: "absolute", top: "16px", left: "16px"}}
             />
             <img
                 ref={image}
