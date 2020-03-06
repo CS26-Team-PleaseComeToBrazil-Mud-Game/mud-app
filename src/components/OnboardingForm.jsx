@@ -64,7 +64,7 @@ const OnboardingForm = props => {
         axios
             .post(`${isLogin ? "login" : "registration"}/`, {...reqBody})
             .then(res => {
-                console.log("from login", res)
+                // console.log("from login", res)
                 data = res.data
                 // update store
                 dispatch({

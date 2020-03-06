@@ -41,7 +41,10 @@ const MapCanvas = props => {
             }
         }
         sprctx.onload = () => {
-            draw(0, 0)
+
+            // cooridanates * tileSize
+            // add 15 to x and 22 to y
+            draw(4 * 70 + 15, 7 * 70 + 22)
             function draw(x, y){
                 
                 ctx2.drawImage(sprctx, 0,0, tileSize, tileSize, x, y, tileSize, tileSize)
